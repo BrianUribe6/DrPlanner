@@ -3,33 +3,40 @@ package com.cst.drplanner;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        Fragment onSelectedFragment;
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
+                    onSelectedFragment = new HomeFragment();
+                    break;
                 case R.id.navigation_notes:
-                    mTextMessage.setText(R.string.title_notes);
-                    return true;
+                    onSelectedFragment = new NotesFragment();
+                    break;
                 case R.id.navigation_alarm:
-                    mTextMessage.setText(R.string.title_alarm);
-                    return true;
+                     onSelectedFragment = new AlarmFragment();
+                    break;
                 case R.id.navigation_life:
-                    mTextMessage.setText(R.string.title_life);
-                    return true;
+                     onSelectedFragment = new LifeFragment();
+                    break;
+                case R.id.navigation_todo:
+                     onSelectedFragment = new TodoFragment();
+                    break;
             }
-            return false;
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    onSelectedFragment).commit();
+            return true;
         }
     };
 
@@ -38,9 +45,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
     }
 
 }
