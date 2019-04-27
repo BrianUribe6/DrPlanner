@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment onSelectedFragment;
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+            //Handles the switching between tabs
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     onSelectedFragment = new HomeFragment();
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        //Setting home as the first tab
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new HomeFragment()).commit();
     }
