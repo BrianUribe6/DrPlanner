@@ -7,12 +7,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 
 public class AlarmFragment extends Fragment {
 
@@ -52,9 +55,19 @@ public class AlarmFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-    //Adds a new alarm at the end of the list, and then updates the RecylerView
+    //Adds a new alarm (with the current time) at the end of the list, and updates the RecylerView
     private void addAlarm(String time, String meridiem){
+        //last position in the list
         int afterLastAlarm = mAlarmTime.size() + 1;
+
+        //getting current time
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        String currTime = sdf.format(c.getTime());
+        //Separating the time from the AM/PM
+        time = currTime.substring(0, 5);
+        meridiem = "" + currTime.substring(6);
+
         mAlarmTime.add(time);
         mTimeMeridiem.add(meridiem);
         adapter.notifyItemInserted(afterLastAlarm);
