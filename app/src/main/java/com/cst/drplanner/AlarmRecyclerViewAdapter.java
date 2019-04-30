@@ -1,7 +1,10 @@
 package com.cst.drplanner;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "AlarmRecyclerViewAdapt";
@@ -35,8 +40,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_alarm_entry,
                 viewGroup,false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -75,14 +79,22 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         //Updating view
         notifyItemRemoved(position);
     }
-    private  void updateAlarm(@NonNull final ViewHolder viewHolder, String time, String AM_PM){
+    private  void updateAlarm(@NonNull final ViewHolder viewHolder, String time, String AM_PM, long timeInMilliseconds){
         //Adding time to recyclerView
         mTime.set(viewHolder.getAdapterPosition(), time.substring(0,5));
         mMeridiem.set(viewHolder.getAdapterPosition(), AM_PM);
-        //Activating alarm
         viewHolder.alarmState.setChecked(true);
-        //Updating
+        //Updating text
         notifyDataSetChanged();
+
+        //Activating alarm
+        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(mContext, AlarmReceiver.class);
+        int requestCode = viewHolder.getAdapterPosition();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, requestCode, intent, requestCode);
+        alarmManager.setRepeating(AlarmManager.RTC, timeInMilliseconds, AlarmManager.INTERVAL_DAY, pendingIntent);
+        Toast.makeText(mContext, "Alarm is set", Toast.LENGTH_SHORT).show();
+
 
     }
     private void setAlarm(@NonNull final ViewHolder viewHolder, View view, int hour, int minute){
@@ -98,6 +110,9 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 int pickerHour = timePicker.getHour();
                 int pickerMinutes = timePicker.getMinute();
+                //Used to fire the alarm precisely
+                long timeInMillis = TimeUnit.HOURS.toMillis(pickerHour) + TimeUnit.MINUTES.toMillis(pickerMinutes);
+
                 String _24HourTime = pickerHour + ":" + pickerMinutes;
                 String amPm;
 
@@ -113,7 +128,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
                     time = time.substring(0,5);
 
                     //Setting alarm
-                    updateAlarm(viewHolder, time, amPm);
+                    updateAlarm(viewHolder, time, amPm, timeInMillis);
 
                 } catch (Exception e) {
                     e.printStackTrace();

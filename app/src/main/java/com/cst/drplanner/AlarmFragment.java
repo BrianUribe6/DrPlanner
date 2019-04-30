@@ -22,7 +22,7 @@ public class AlarmFragment extends Fragment {
     //variables to store alarm information
     private ArrayList<String> mAlarmTime = new ArrayList<>();
     private ArrayList<String> mTimeMeridiem = new ArrayList<>();
-    AlarmRecyclerViewAdapter adapter = new AlarmRecyclerViewAdapter(getContext(), mAlarmTime, mTimeMeridiem);
+    AlarmRecyclerViewAdapter adapter = new AlarmRecyclerViewAdapter(getActivity(), mAlarmTime, mTimeMeridiem);
 
     @Nullable
     @Override
