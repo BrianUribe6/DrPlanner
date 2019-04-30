@@ -67,7 +67,6 @@ public class AlarmFragment extends Fragment {
         //Separating the time from the AM/PM
         time = currTime.substring(0, 5);
         meridiem = "" + currTime.substring(6);
-
         mAlarmTime.add(time);
         mTimeMeridiem.add(meridiem);
         adapter.notifyItemInserted(afterLastAlarm);
