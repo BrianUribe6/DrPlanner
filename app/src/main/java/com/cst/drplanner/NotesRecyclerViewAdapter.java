@@ -13,8 +13,10 @@ import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
-public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>{
+public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder> {
+
     private ArrayList<String> mNoteTitle;
     private ArrayList<String> mNoteBody;
     private Context mContext;
@@ -49,8 +51,11 @@ public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecycle
         TextView noteBody;
         LinearLayout notesParentLayout;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
+
             noteTitle = itemView.findViewById(R.id.txt_note_title);
             noteBody = itemView.findViewById(R.id.txt_note_body);
             notesParentLayout = itemView.findViewById(R.id.notes_parent_layout);

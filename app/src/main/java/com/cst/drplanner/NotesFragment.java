@@ -1,6 +1,8 @@
 package com.cst.drplanner;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,16 +37,27 @@ public class NotesFragment extends Fragment {
         fabtnCreateNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNote();
+                Intent i = new Intent(getActivity(), NotesEditor.class);
+                startActivity(i);
+              ((Activity) getActivity()).overridePendingTransition(0, 0);
+
                 adapter.notifyItemInserted(mNoteTitle.size()+1);
+
+                    addNote("Sup", "Hello?");
+
             }
         });
+
+
+
+
         return view;
     }
 
-    private void addNote(){
-        mNoteTitle.add("This is a test");
-        mNoteBody.add("This is definitely a test");
+    public void addNote(String title, String body){
+
+        mNoteTitle.add(title);
+        mNoteBody.add(body);
     }
 
     private void initRecyclerView(View view){
