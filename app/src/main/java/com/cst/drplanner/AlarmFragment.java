@@ -33,22 +33,13 @@ public class AlarmFragment extends Fragment {
         addAlarmFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addAlarm("01:00","AM");
+                addAlarm();
             }
         });
-        initAlarm();
         initRecyclerView(view);
         return view;
     }
-    //Test method to add initial values to the recycler view
-    private void initAlarm(){
-        //Alarm 1
-        mAlarmTime.add("12:00");
-        mTimeMeridiem.add("AM");
-        //Alarm 2
-        mAlarmTime.add("12:01");
-        mTimeMeridiem.add("PM");
-    }
+
     // sets the adapter and layout to be used by the RecyclerView
     private void initRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.recycler_alarm);
@@ -56,7 +47,7 @@ public class AlarmFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
     //Adds a new alarm (with the current time) at the end of the list, and updates the RecylerView
-    private void addAlarm(String time, String meridiem){
+    private void addAlarm(){
         //last position in the list
         int afterLastAlarm = mAlarmTime.size() + 1;
 
@@ -65,8 +56,8 @@ public class AlarmFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         String currTime = sdf.format(c.getTime());
         //Separating the time from the AM/PM
-        time = currTime.substring(0, 5);
-        meridiem = "" + currTime.substring(6);
+        String time = currTime.substring(0, 5);
+        String meridiem = "" + currTime.substring(6);
         mAlarmTime.add(time);
         mTimeMeridiem.add(meridiem);
         adapter.notifyItemInserted(afterLastAlarm);

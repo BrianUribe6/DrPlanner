@@ -79,7 +79,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         //Updating view
         notifyItemRemoved(position);
     }
-    private  void updateAlarm(@NonNull final ViewHolder viewHolder, String time, String AM_PM, long timeInMilliseconds){
+    private  void updateAlarm(@NonNull final ViewHolder viewHolder,Context context, String time, String AM_PM, long timeInMilliseconds){
         //Adding time to recyclerView
         mTime.set(viewHolder.getAdapterPosition(), time.substring(0,5));
         mMeridiem.set(viewHolder.getAdapterPosition(), AM_PM);
@@ -88,14 +88,12 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         notifyDataSetChanged();
 
         //Activating alarm
-        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(mContext, AlarmReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
         int requestCode = viewHolder.getAdapterPosition();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, requestCode, intent, requestCode);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
         alarmManager.setRepeating(AlarmManager.RTC, timeInMilliseconds, AlarmManager.INTERVAL_DAY, pendingIntent);
-        Toast.makeText(mContext, "Alarm is set", Toast.LENGTH_SHORT).show();
-
-
+        Toast.makeText(context, "Alarm is set at " + time + AM_PM, Toast.LENGTH_SHORT).show();
     }
     private void setAlarm(@NonNull final ViewHolder viewHolder, View view, int hour, int minute){
         /* Opens the Time Picker Dialog to allow the user to set the time of the alarm. This time
@@ -105,7 +103,8 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         @param viewHolder corresponds to the viewHolder of the current selected widget
         @param view corresponds to the view of the onClick listener.
         * */
-        final TimePickerDialog mTimePicker = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+        final Context context = view.getContext();
+        final TimePickerDialog mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 int pickerHour = timePicker.getHour();
@@ -128,7 +127,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
                     time = time.substring(0,5);
 
                     //Setting alarm
-                    updateAlarm(viewHolder, time, amPm, timeInMillis);
+                    updateAlarm(viewHolder, context, time, amPm, timeInMillis);
 
                 } catch (Exception e) {
                     e.printStackTrace();
