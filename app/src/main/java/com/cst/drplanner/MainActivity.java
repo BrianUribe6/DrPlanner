@@ -18,6 +18,15 @@ public class MainActivity extends AppCompatActivity {
     final Fragment todoFragment = new TodoFragment();
     Fragment active = homeFragment;
     FragmentManager fm = getSupportFragmentManager();
+    SelectedBundle selectedBundle;
+
+    public interface SelectedBundle {
+        void onBundleSelect(Bundle bundle);
+    }
+
+    public void setOnBundleSelected(SelectedBundle selectedBundle) {
+        this.selectedBundle = selectedBundle;
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,5 +77,7 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
+
+
 
 }
