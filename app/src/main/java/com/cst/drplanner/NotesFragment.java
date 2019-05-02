@@ -47,9 +47,6 @@ public class NotesFragment extends Fragment {
 
                 addNote("Sup", "Hello?");
 //                adapter.notifyItemInserted(notesList.size()+1);
-
-
-
             }
         });
 

@@ -29,9 +29,6 @@ public class NotesEditor extends AppCompatActivity {
         setContentView(R.layout.activity_notes_editor);
         txtNoteTitle = findViewById(R.id.txt_EDITOR_note_title);
         txtNoteBody = findViewById(R.id.txt_EDITOR_note_body);
-
-
-
     }
 
     public void Save(String fileName) {

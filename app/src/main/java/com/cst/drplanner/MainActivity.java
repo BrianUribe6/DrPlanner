@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                     fm.beginTransaction().hide(active).show(alarmFragment).commit();
                     active = alarmFragment;
                     return true;
-                case R.id.navigation_life:
+                case R.id.navigation_calendar:
                     fm.beginTransaction().hide(active).show(lifeFragment).commit();
                     active = lifeFragment;
                     return true;
