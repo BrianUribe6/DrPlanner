@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -14,18 +15,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.os.Bundle;
 
 import java.util.ArrayList;
 
 public class NotesFragment extends Fragment {
     private ArrayList<String> mNoteTitle = new ArrayList<>();
     private ArrayList<String> mNoteBody = new ArrayList<>();
+    NotesEditor nEditor = new NotesEditor();
+
 
     NotesRecyclerViewAdapter adapter = new NotesRecyclerViewAdapter(mNoteTitle, mNoteBody, getActivity());
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+       /* if (getArguments() != null) {
+            addNote(getArguments().getString("title"), getArguments().getString("body"));
+        }*/
+
+
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
 
         //Floating Action Button in fragment notes
@@ -37,16 +47,28 @@ public class NotesFragment extends Fragment {
         fabtnCreateNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), NotesEditor.class);
+                nEditor = new NotesEditor();
+                Intent i = new Intent(getActivity(), nEditor.getClass());
                 startActivity(i);
               ((Activity) getActivity()).overridePendingTransition(0, 0);
 
+
                 adapter.notifyItemInserted(mNoteTitle.size()+1);
 
-                    addNote("Sup", "Hello?");
+
+                //addNote(nEditor.getNoteTitle(), nEditor.getNoteBody());
+                /*((MainActivity)getActivity()).setOnBundleSelected(new MainActivity.SelectedBundle() {
+                    @Override
+                    public void onBundleSelect(Bundle bundle) {
+                        updateList(bundle);
+
+                });*/
 
             }
-        });
+
+           // if(nEditor)
+        }
+        );
 
 
 
@@ -66,6 +88,13 @@ public class NotesFragment extends Fragment {
         rviewNotes.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-
+    public static NotesFragment newInstance(String param1, String param2) {
+        NotesFragment fragment = new NotesFragment();
+        Bundle args = new Bundle();
+        args.putString("title", param1);
+        args.putString("body", param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
 }
