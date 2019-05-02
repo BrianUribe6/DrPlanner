@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -28,6 +30,9 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
     private ArrayList<String> mTime;
     private ArrayList<String> mMeridiem;
     private Context mContext;
+    //Had to make these two global so I could access them within an inner class
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     public AlarmRecyclerViewAdapter(Context mContext, ArrayList<String> mTime, ArrayList<String> mMeridiem) {
         this.mTime = mTime;
@@ -65,17 +70,24 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
             public boolean onLongClick(View view) {
                 int position = viewHolder.getAdapterPosition();
                 deleteAlarm(position);
-                //FIXME: Add method to cancel alarm once AlarmManager is implemented
+                cancelAlarm(alarmManager, pendingIntent);
                 return true;
 
             }
         });
     }
 
+    private void cancelAlarm(AlarmManager alarmManager, PendingIntent pendingIntent) {
+        alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
+    }
+
     private void deleteAlarm(int position) {
         //removing alarm from arrayList
         mTime.remove(position);
         mMeridiem.remove(position);
+        //Canceling alarm
+        cancelAlarm(alarmManager, pendingIntent);
         //Updating view
         notifyItemRemoved(position);
     }
@@ -83,17 +95,36 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         //Adding time to recyclerView
         mTime.set(viewHolder.getAdapterPosition(), time.substring(0,5));
         mMeridiem.set(viewHolder.getAdapterPosition(), AM_PM);
-        viewHolder.alarmState.setChecked(true);
+        viewHolder.alarmSwitch.setChecked(true);
         //Updating text
         notifyDataSetChanged();
 
-        //Activating alarm
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
+        //Request code is the position of the current alarm widget.
         int requestCode = viewHolder.getAdapterPosition();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC, timeInMilliseconds, AlarmManager.INTERVAL_DAY, pendingIntent);
+        //Activating alarm
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC, timeInMilliseconds, pendingIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC, timeInMilliseconds, AlarmManager.INTERVAL_DAY, pendingIntent);
         Toast.makeText(context, "Alarm is set at " + time + AM_PM, Toast.LENGTH_SHORT).show();
+
+        //Deactivate alarm
+       boolean alarmUp = (PendingIntent.getBroadcast(context, requestCode,
+                new Intent(context, AlarmReceiver.class),
+                PendingIntent.FLAG_NO_CREATE) != null);
+       if (alarmUp) {
+           viewHolder.alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+               @Override
+               public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                   if (!compoundButton.isChecked()) {
+                       Log.d(TAG, "onCheckedChanged: Alarm disabled");
+                       alarmManager.cancel(pendingIntent);
+                       pendingIntent.cancel();
+                   }
+               }
+           });
+       }
     }
     private void setAlarm(@NonNull final ViewHolder viewHolder, View view, int hour, int minute){
         /* Opens the Time Picker Dialog to allow the user to set the time of the alarm. This time
@@ -146,7 +177,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         TextView time;
         TextView meridiem;
         LinearLayout parentLayout;
-        Switch alarmState;
+        Switch alarmSwitch;
         FloatingActionButton fabAddAlarm;
         FloatingActionButton removeAlarm;
 
@@ -155,7 +186,7 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
             time = itemView.findViewById(R.id.txt_time);
             meridiem = itemView.findViewById(R.id.txt_meridiem);
             parentLayout = itemView.findViewById(R.id.parent_layout);
-            alarmState = itemView.findViewById(R.id.switch_alarm_state);
+            alarmSwitch = itemView.findViewById(R.id.switch_alarm_state);
             fabAddAlarm = itemView.findViewById(R.id.fab_add_alarm);
             removeAlarm = itemView.findViewById(R.id.fab_remove_alarm);
         }
