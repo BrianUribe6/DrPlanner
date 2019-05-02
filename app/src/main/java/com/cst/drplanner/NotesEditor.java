@@ -1,7 +1,10 @@
 package com.cst.drplanner;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,8 +19,10 @@ import java.io.OutputStreamWriter;
 public class NotesEditor extends AppCompatActivity {
     private EditText txtNoteTitle;
     private EditText txtNoteBody;
+    private Intent intent = getIntent();
     private String title, content;
-
+    private FloatingActionButton fabSaveNote;
+    private static final String TAG = "NotesEditor";
     public NotesEditor() {
     }
 
@@ -29,10 +34,42 @@ public class NotesEditor extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_editor);
+        Intent intent = getIntent();
+        title = intent.getStringExtra("title");
+        content = intent.getStringExtra("content");
         txtNoteTitle = findViewById(R.id.txt_EDITOR_note_title);
         txtNoteBody = findViewById(R.id.txt_EDITOR_note_body);
+        fabSaveNote = findViewById(R.id.fabtn_save);
+
+        txtNoteTitle.setText(title);
+        txtNoteBody.setText(content);
+
+        fabSaveNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (txtNoteTitle.getText().toString().isEmpty()){
+                    Toast.makeText(NotesEditor.this, "You must insert a title", Toast.LENGTH_SHORT).show();
+                }else {
+                save(txtNoteTitle.getText().toString() + ".txt");
+                    new NotesFragment().addNote(txtNoteTitle.getText().toString(), txtNoteBody.getText().toString());
+                    finish();
+                }
+            }
+        });
     }
-    public String Open(String fileName) {
+    public void save(String fileName) {
+        try {
+            OutputStreamWriter out =
+                    new OutputStreamWriter(openFileOutput(fileName, 0));
+            out.write(txtNoteBody.getText().toString());
+            out.close();
+            Toast.makeText(this, "Note saved!", Toast.LENGTH_SHORT).show();
+        } catch (Throwable t) {
+            Toast.makeText(this, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public String open(String fileName) {
         String content = "";
         if (FileExists(fileName)) {
             try {
@@ -43,7 +80,8 @@ public class NotesEditor extends AppCompatActivity {
                     String str;
                     StringBuilder buf = new StringBuilder();
                     while ((str = reader.readLine()) != null) {
-                        buf.append(str + "\n");
+                        buf.append(str);
+                        buf.append("\n");
                     } in .close();
                     content = buf.toString();
                 }
@@ -54,22 +92,9 @@ public class NotesEditor extends AppCompatActivity {
         return content;
     }
 
-    public void save(String fileName) {
-        try {
-            OutputStreamWriter out =
-                    new OutputStreamWriter(openFileOutput(fileName, 0));
-            out.write(txtNoteBody.toString());
-            out.close();
-            Toast.makeText(this, "Note Saved!", Toast.LENGTH_SHORT).show();
-        } catch (Throwable t) {
-            Toast.makeText(this, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public boolean FileExists(String fname){
+    public boolean FileExists(String fname) {
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
-
     }
 }
 

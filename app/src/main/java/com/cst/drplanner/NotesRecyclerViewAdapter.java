@@ -1,5 +1,6 @@
 package com.cst.drplanner;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,10 +27,19 @@ public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecycle
         return new ViewHolder(view);
     }
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         NotesBuilder note = notesList.get(i);
         viewHolder.title.setText(note.getTitle());
         viewHolder.content.setText(note.getContent());
+        viewHolder.notesParentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), NotesEditor.class);
+                i.putExtra("title",notesList.get(viewHolder.getAdapterPosition()).getTitle());
+                i.putExtra("content",notesList.get(viewHolder.getAdapterPosition()).getContent());
+               view.getContext().startActivity(i);
+            }
+        });
     }
     @Override
     public int getItemCount() {
