@@ -20,7 +20,6 @@ import java.util.List;
 
 public class NotesFragment extends Fragment {
     private List<NotesBuilder> notesList = new ArrayList<>();
-
     private NotesRecyclerViewAdapter adapter;
     private RecyclerView notesRecyler;
 
@@ -29,14 +28,13 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
-
         //Floating Action Button in fragment notes
         FloatingActionButton fabtnCreateNote = view.findViewById(R.id.fabtnCreateNote);
 //
 //        //Recycler view in fragment notes
         adapter = new NotesRecyclerViewAdapter(notesList);
-        RecyclerView rviewNotes = view.findViewById(R.id.rviewNotes);
-        rviewNotes.setAdapter(adapter);
+        notesRecyler= view.findViewById(R.id.rviewNotes);
+        notesRecyler.setAdapter(adapter);
         initRecyclerView(view);
         fabtnCreateNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +47,6 @@ public class NotesFragment extends Fragment {
 //                adapter.notifyItemInserted(notesList.size()+1);
             }
         });
-
         return view;
     }
 

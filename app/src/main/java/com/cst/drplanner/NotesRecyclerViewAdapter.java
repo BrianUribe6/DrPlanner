@@ -31,7 +31,6 @@ public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecycle
         viewHolder.title.setText(note.getTitle());
         viewHolder.content.setText(note.getContent());
     }
-
     @Override
     public int getItemCount() {
         return notesList.size();
