@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NotesFragment extends Fragment {
-    private ArrayList<String> mNoteTitle = new ArrayList<>();
-    private ArrayList<String> mNoteBody = new ArrayList<>();
+    private List<NotesBuilder> notesList = new ArrayList<>();
 
-    NotesRecyclerViewAdapter adapter = new NotesRecyclerViewAdapter(mNoteTitle, mNoteBody, getActivity());
+    private NotesRecyclerViewAdapter adapter;
+    private RecyclerView notesRecyler;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -32,32 +34,32 @@ public class NotesFragment extends Fragment {
         FloatingActionButton fabtnCreateNote = view.findViewById(R.id.fabtnCreateNote);
 //
 //        //Recycler view in fragment notes
-//        RecyclerView rviewNotes = view.findViewById(R.id.rviewNotes);
+        adapter = new NotesRecyclerViewAdapter(notesList);
+        RecyclerView rviewNotes = view.findViewById(R.id.rviewNotes);
+        rviewNotes.setAdapter(adapter);
         initRecyclerView(view);
         fabtnCreateNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), NotesEditor.class);
                 startActivity(i);
-              ((Activity) getActivity()).overridePendingTransition(0, 0);
+//              ((Activity) getActivity()).overridePendingTransition(0, 0);
 
-                adapter.notifyItemInserted(mNoteTitle.size()+1);
+                addNote("Sup", "Hello?");
+//                adapter.notifyItemInserted(notesList.size()+1);
 
-                    addNote("Sup", "Hello?");
+
 
             }
         });
-
-
-
 
         return view;
     }
 
     public void addNote(String title, String body){
-
-        mNoteTitle.add(title);
-        mNoteBody.add(body);
+       NotesBuilder note = new NotesBuilder(title, body);
+       notesList.add(note);
+       adapter.notifyItemInserted(notesList.size()+1);
     }
 
     private void initRecyclerView(View view){

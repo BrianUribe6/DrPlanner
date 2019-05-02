@@ -12,8 +12,7 @@ import java.io.OutputStreamWriter;
 public class NotesEditor extends AppCompatActivity {
     private EditText txtNoteTitle;
     private EditText txtNoteBody;
-    private String title,
-            content;
+    private String title, content;
 
     public NotesEditor() {
     }
@@ -31,12 +30,8 @@ public class NotesEditor extends AppCompatActivity {
         txtNoteTitle = findViewById(R.id.txt_EDITOR_note_title);
         txtNoteBody = findViewById(R.id.txt_EDITOR_note_body);
 
-        Bundle bundle = new Bundle();
-        bundle.putString("params", "My String data");
 
-        // set MyFragment Arguments
-        NotesFragment myObj = new NotesFragment();
-        myObj.setArguments(bundle);
+
     }
 
     public void Save(String fileName) {
@@ -55,8 +50,6 @@ public class NotesEditor extends AppCompatActivity {
         File file = getBaseContext().getFileStreamPath(fname);
         return file.exists();
     }
-
-
 
     public String getNoteTitle(){
         return txtNoteTitle.toString();
