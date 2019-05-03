@@ -52,6 +52,7 @@ public class NotesEditor extends AppCompatActivity {
                 }else {
                 save(txtNoteTitle.getText().toString() + ".txt");
                     new NotesFragment().addNote(txtNoteTitle.getText().toString(), txtNoteBody.getText().toString());
+                    NotesFragment.adapter.notifyDataSetChanged();
                     finish();
                 }
             }
@@ -67,34 +68,6 @@ public class NotesEditor extends AppCompatActivity {
         } catch (Throwable t) {
             Toast.makeText(this, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    public String open(String fileName) {
-        String content = "";
-        if (FileExists(fileName)) {
-            try {
-                InputStream in = openFileInput(fileName);
-                if ( in != null) {
-                    InputStreamReader tmp = new InputStreamReader( in );
-                    BufferedReader reader = new BufferedReader(tmp);
-                    String str;
-                    StringBuilder buf = new StringBuilder();
-                    while ((str = reader.readLine()) != null) {
-                        buf.append(str);
-                        buf.append("\n");
-                    } in .close();
-                    content = buf.toString();
-                }
-            } catch (java.io.FileNotFoundException e) {} catch (Throwable t) {
-                Toast.makeText(this, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
-            }
-        }
-        return content;
-    }
-
-    public boolean FileExists(String fname) {
-        File file = getBaseContext().getFileStreamPath(fname);
-        return file.exists();
     }
 }
 

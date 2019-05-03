@@ -39,14 +39,13 @@ public class NotesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
         context = view.getContext();
+        //        //Recycler view in fragment notes
         prepareNotes();
+        initRecyclerView(view);
         //Floating Action Button in fragment notes
         FloatingActionButton fabtnCreateNote = view.findViewById(R.id.fabtnCreateNote);
 //
-//        //Recycler view in fragment notes
-        notesRecyler= view.findViewById(R.id.rviewNotes);
-        notesRecyler.setAdapter(adapter);
-        initRecyclerView(view);
+
         fabtnCreateNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,30 +72,6 @@ public class NotesFragment extends Fragment {
         }
     }
 ///data/user/0/com.cst.drplanner/files
-//    public String Open(String fileName) {
-//
-//        //Get the text file
-//        String directory = context.getFilesDir().getAbsolutePath();
-//
-//        //Read text from file
-//        File textFile = new File(directory, fileName);
-//
-//        //Read text from file
-//        StringBuilder text = new StringBuilder();
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(textFile));
-//            String line;
-//
-//            while ((line = br.readLine()) != null) {
-//                text.append(line);
-//                text.append('\n');
-//            }
-//            br.close();
-//        } catch (IOException e) {
-//            Toast.makeText(getContext(), "Exception: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//        return text.toString();
-//    }
     public String Open(String fileName) {
         String content = "";
         try {
@@ -107,7 +82,8 @@ public class NotesFragment extends Fragment {
                 String str;
                 StringBuilder buf = new StringBuilder();
                 while ((str = reader.readLine()) != null) {
-                    buf.append(str + "\n");
+                    buf.append(str);
+                    buf.append("\n");
                 } in .close();
 
                 content = buf.toString();
@@ -125,18 +101,18 @@ public class NotesFragment extends Fragment {
         directory = context.getFilesDir();
         File[] files = directory.listFiles();
         String filename;
-        for (int f = 1; f < files.length; f++) {
-            filename = files[f].getName();
+        for (File file : files) {
+            filename = file.getName();
             //removing the .txt extension text
             filename = filename.substring(0, filename.length() - 4);
-            NotesBuilder note = new NotesBuilder(filename, Open(filename));
-//            notesList.add(note);
+            NotesBuilder note = new NotesBuilder(filename, Open(filename + ".txt"));
+            notesList.add(note);
         }
     }
     private void initRecyclerView(View view){
-        RecyclerView rviewNotes = view.findViewById(R.id.rviewNotes);
-        rviewNotes.setAdapter(adapter);
-        rviewNotes.setLayoutManager(new LinearLayoutManager(getActivity()));
+        notesRecyler = view.findViewById(R.id.rviewNotes);
+        notesRecyler.setAdapter(adapter);
+        notesRecyler.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
 
