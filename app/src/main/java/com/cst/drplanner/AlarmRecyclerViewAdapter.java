@@ -39,7 +39,6 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         this.mMeridiem = mMeridiem;
         this.mContext = mContext;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -47,7 +46,6 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
                 viewGroup,false);
         return new ViewHolder(view);
     }
-
     @Override
     //Populates list with information
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
@@ -72,11 +70,9 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
                 deleteAlarm(position);
                 cancelAlarm(alarmManager, pendingIntent);
                 return true;
-
             }
         });
     }
-
     private void cancelAlarm(AlarmManager alarmManager, PendingIntent pendingIntent) {
         alarmManager.cancel(pendingIntent);
         pendingIntent.cancel();
@@ -86,8 +82,6 @@ public class AlarmRecyclerViewAdapter extends RecyclerView.Adapter<AlarmRecycler
         //removing alarm from arrayList
         mTime.remove(position);
         mMeridiem.remove(position);
-        //Canceling alarm
-        cancelAlarm(alarmManager, pendingIntent);
         //Updating view
         notifyItemRemoved(position);
     }

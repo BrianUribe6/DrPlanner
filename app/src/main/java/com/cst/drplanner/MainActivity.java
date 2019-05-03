@@ -11,12 +11,10 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    final Fragment homeFragment = new HomeFragment();
     final Fragment notesFragment = new NotesFragment();
     final Fragment alarmFragment = new AlarmFragment();
-    final Fragment lifeFragment = new LifeFragment();
-    final Fragment todoFragment = new TodoFragment();
-    Fragment active = homeFragment;
+    final Fragment calendarFragment = new CalendarFragment();
+    Fragment active = alarmFragment;
     FragmentManager fm = getSupportFragmentManager();
     SelectedBundle selectedBundle;
 
@@ -27,18 +25,12 @@ public class MainActivity extends AppCompatActivity {
     public void setOnBundleSelected(SelectedBundle selectedBundle) {
         this.selectedBundle = selectedBundle;
     }
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        Fragment onSelectedFragment;
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    fm.beginTransaction().hide(active).show(homeFragment).commit();
-                    active = homeFragment;
-                    return true;
                 case R.id.navigation_notes:
                     fm.beginTransaction().hide(active).show(notesFragment).commit();
                     active = notesFragment;
@@ -48,36 +40,24 @@ public class MainActivity extends AppCompatActivity {
                     active = alarmFragment;
                     return true;
                 case R.id.navigation_calendar:
-                    fm.beginTransaction().hide(active).show(lifeFragment).commit();
-                    active = lifeFragment;
-                    return true;
-                case R.id.navigation_todo:
-                    fm.beginTransaction().hide(active).show(todoFragment).commit();
-                    active = todoFragment;
+                    fm.beginTransaction().hide(active).show(calendarFragment).commit();
+                    active = calendarFragment;
                     return true;
             }
             return false;
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //Adding all the fragments
-        fm.beginTransaction().add(R.id.fragment_container, todoFragment, "todo").hide(todoFragment).commit();
-        fm.beginTransaction().add(R.id.fragment_container, lifeFragment, "life").hide(lifeFragment).commit();
-        fm.beginTransaction().add(R.id.fragment_container, alarmFragment, "alarm").hide(alarmFragment).commit();
-        fm.beginTransaction().add(R.id.fragment_container, notesFragment, "notes").hide(notesFragment).commit();
         //This one does not get hidden because it is the main fragment
-        fm.beginTransaction().add(R.id.fragment_container, homeFragment, "home").commit();
+        fm.beginTransaction().add(R.id.fragment_container, alarmFragment, "alarm").commit();
+        fm.beginTransaction().add(R.id.fragment_container, notesFragment, "notes").hide(notesFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, calendarFragment, "calendar").hide(calendarFragment).commit();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
     }
-
-
-
 }
