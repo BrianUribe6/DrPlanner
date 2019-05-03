@@ -18,6 +18,15 @@ public class MainActivity extends AppCompatActivity {
     final Fragment todoFragment = new TodoFragment();
     Fragment active = homeFragment;
     FragmentManager fm = getSupportFragmentManager();
+    SelectedBundle selectedBundle;
+
+    public interface SelectedBundle {
+        void onBundleSelect(Bundle bundle);
+    }
+
+    public void setOnBundleSelected(SelectedBundle selectedBundle) {
+        this.selectedBundle = selectedBundle;
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -38,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                     fm.beginTransaction().hide(active).show(alarmFragment).commit();
                     active = alarmFragment;
                     return true;
-                case R.id.navigation_life:
+                case R.id.navigation_calendar:
                     fm.beginTransaction().hide(active).show(lifeFragment).commit();
                     active = lifeFragment;
                     return true;
@@ -68,5 +77,7 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
+
+
 
 }
