@@ -9,16 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AlarmStopActivity"></activity>
-        <activity android:name=".NotesEditor"></activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".AlarmStopActivity" />
+        <activity android:name=".NotesEditor" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
         </activity>
 
         <receiver
