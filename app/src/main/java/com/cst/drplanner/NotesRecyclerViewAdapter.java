@@ -24,6 +24,8 @@ public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecycle
     private static final String TAG = "NotesRecyclerViewAdapte";
     private List<NotesBuilder> notesList;
     private String title;
+    private String content;
+    private int position;
     private boolean deleted;
 
     public NotesRecyclerViewAdapter(List<NotesBuilder> notesList) {
@@ -39,18 +41,20 @@ public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecycle
     }
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        title =  notesList.get(viewHolder.getAdapterPosition()).getTitle();
+
         NotesBuilder note = notesList.get(i);
         viewHolder.title.setText(note.getTitle());
         viewHolder.content.setText(note.getContent());
         viewHolder.notesParentLayout.setOnClickListener(new View.OnClickListener() {
 
-            String noteContent = open(title + ".txt");
                 @Override
                 public void onClick(View view) {
+                    position = viewHolder.getAdapterPosition();
+                    title =  notesList.get(position).getTitle();
+                    content = open(title + ".txt");
                     Intent i = new Intent(view.getContext(), NotesEditor.class);
                     i.putExtra("title",title);
-                    i.putExtra("content",noteContent);
+                    i.putExtra("content",content);
                     view.getContext().startActivity(i);
             }
         });
@@ -62,7 +66,7 @@ public class NotesRecyclerViewAdapter  extends RecyclerView.Adapter<NotesRecycle
                 File file = new File(dir, title + ".txt");
                 deleted = file.delete();
                 if (deleted) {
-                    int position = viewHolder.getAdapterPosition();
+                    position = viewHolder.getAdapterPosition();
                     notesList.remove(position);
                     notifyItemRemoved(position);
                     Toast.makeText(view.getContext(), "Note was successfully deleted.", Toast.LENGTH_SHORT).show();
